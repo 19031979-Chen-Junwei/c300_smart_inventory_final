@@ -14,6 +14,7 @@ import '../text_field_container.dart';
 
 TextEditingController usernameController = new TextEditingController();
 TextEditingController passwordController = new TextEditingController();
+String token = "";
 
 class FingerprintPage extends StatelessWidget {
   @override
@@ -65,7 +66,7 @@ class FingerprintPage extends StatelessWidget {
                           Icons.person,
                           color: kPrimaryColor,
                         ),
-                        hintText: "Your Email",
+                        hintText: "Employee ID",
                         border: InputBorder.none,
                       ),
                     ),
@@ -104,33 +105,88 @@ class FingerprintPage extends StatelessWidget {
                               color: Color.fromRGBO(255, 255, 255, 1)),
                         ),
                         onPressed: () async {
-                          var headers = {'Content-Type': 'application/json'};
+                          var headers = {
+                            'Content-Type': 'application/json',
+                          };
                           var request = http.Request(
                               'POST',
                               Uri.parse(
-                                  'https://chill.azurewebsites.net/api/Members/authentication'));
-                          request.body = json.encode({
-                            "EmployeeNo": usernameController.text,
-                            "password": passwordController.text
-                          });
+                                  'http://chill.azurewebsites.net/api/name/authenticate'));
+                          request.body = json.encode(
+                              {"username": usernameController.text, "password": passwordController.text});
                           request.headers.addAll(headers);
 
                           http.StreamedResponse response = await request.send();
 
-                          if (response.statusCode == 200) {
-                            var saveusername = await response.stream.bytesToString();
+                          // start post
+                          // var headers = {'Content-Type': 'application/json'};
+                          // var request = http.Request(
+                          //     'POST',
+                          //     Uri.parse(
+                          //         'https://chill.azurewebsites.net/api/Members/authentication'));
+                          // request.body = json.encode({
+                          //   "EmployeeNo": usernameController.text,
+                          //   "password": passwordController.text
+                          // });
+                          // request.headers.addAll(headers);
+
+                          // http.StreamedResponse response = await request.send();
+
+                          if (response.statusCode == 200) { // login success
+                            var saveToken =
+                                await response.stream.bytesToString();
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setBool("haveAuth", true);
-                            prefs.setString(
-                                "username", saveusername);
-
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                            );
+                            prefs.setString("username", usernameController.text);
+                            prefs.setString("password", passwordController.text);
+                            token = saveToken;
+                            // Alert
+                            Alert(
+                              context: context,
+                              type: AlertType.success,
+                              title: "Use Biometric",
+                              desc: "Do you wish to able biometric login?",
+                              buttons: [
+                                DialogButton(
+                                  child: Text(
+                                    "Yes",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => HomePage()),
+                                    );
+                                    prefs.setBool("useBio", true);
+                                  },
+                                  width: 120,
+                                ),
+                                DialogButton(
+                                  child: Text(
+                                    "No",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) => HomePage()),
+                                    );
+                                    prefs.setBool("useBio", false);
+                                  },
+                                  width: 120,
+                                )
+                              ],
+                            ).show();
+                            //Alert end
                           } else {
-                            Alert(context: context, title: "Login Fail", desc: "Incorrect username or password").show();
+                            Alert(
+                                    context: context,
+                                    title: "Login Fail",
+                                    desc: "Incorrect username or password")
+                                .show();
                             print(response.reasonPhrase);
                           }
                         },

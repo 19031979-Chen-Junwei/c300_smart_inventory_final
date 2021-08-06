@@ -16,16 +16,19 @@ TextEditingController usernameController = new TextEditingController();
 TextEditingController passwordController = new TextEditingController();
 bool haveAuth = false;
 String username = "";
+bool useBio = false;
+String pass = "";
 // String username2 = "";
 
 getData() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   username = prefs.getString("username");
+  pass = prefs.getString("password");
   haveAuth = prefs.getBool("haveAuth") ?? false;
-  print(username)
-;  // username2 = prefs.getString("username");
+  useBio = prefs.getBool("useBio") ?? false;
+  print(username);
+  print(pass); // username2 = prefs.getString("username");
 }
-
 
 // @override
 // void initState(){
@@ -96,8 +99,9 @@ class MainPage extends StatelessWidget {
                               color: Color.fromRGBO(255, 255, 255, 1)),
                         ),
                         onPressed: () async {
-                          print(haveAuth);
-                          if (!haveAuth) {
+                          print("haveAuth : " + haveAuth.toString());
+                          print("useBio : " + useBio.toString());
+                          if (haveAuth == false || useBio == false) {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => FingerprintPage()),
@@ -106,10 +110,35 @@ class MainPage extends StatelessWidget {
                             final isAuthenticated =
                                 await LocalAuthApi.authenticate();
                             if (isAuthenticated) {
+                              var headers = {
+                                'Content-Type': 'application/json',
+                              };
+                              var request = http.Request(
+                                  'POST',
+                                  Uri.parse(
+                                      'http://chill.azurewebsites.net/api/name/authenticate'));
+                              request.body = json.encode({
+                                "username": username,
+                                "password": pass
+                              });
+                              request.headers.addAll(headers);
+
+                              http.StreamedResponse response =
+                                  await request.send();
+
+                              var saveToken =
+                                  await response.stream.bytesToString();
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setBool("haveAuth", true);
+                              prefs.setString("username", saveToken);
+                              token = saveToken;
+
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => HomePage()),
                               );
+
                             } else {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(

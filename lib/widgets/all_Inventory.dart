@@ -1,3 +1,4 @@
+import 'package:c300_smart_inventory/page/fingerprint_Login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:c300_smart_inventory/api/getAPI.dart';
 import 'package:c300_smart_inventory/model/Product.dart';
@@ -30,6 +31,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    print(token);
     if (_newProduct.isEmpty) {
       return Center(
         child: CircularProgressIndicator(),

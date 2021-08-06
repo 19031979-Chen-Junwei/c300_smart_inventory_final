@@ -29,7 +29,7 @@ class ItemCard extends StatelessWidget {
               ),
               child: Hero(
                 tag: "${product.description}",
-                child: Image.network("http://chill.azurewebsites.net/product/${product.image}"),
+                child: Image.network("https://webchill.azurewebsites.net/product/${product.image}"),
               ),
             ),
           ),

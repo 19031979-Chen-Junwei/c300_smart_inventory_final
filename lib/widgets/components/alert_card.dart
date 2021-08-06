@@ -1,3 +1,4 @@
+import 'package:c300_smart_inventory/page/fingerprint_Login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:c300_smart_inventory/model/AlertModel.dart';
@@ -28,6 +29,7 @@ class AlertCard extends StatelessWidget {
     _updateQuantity() async {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
       };
       var request = http.Request(
           'PUT',
@@ -48,6 +50,7 @@ class AlertCard extends StatelessWidget {
     _postDateTime() async {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
       };
       var request = http.Request(
           'POST', Uri.parse('https://chill.azurewebsites.net/api/stock/'));
@@ -125,9 +128,6 @@ class AlertCard extends StatelessWidget {
             // update quantity
             _updateQuantity();
             _postDateTime();
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
           },
         ),
         // IconSlideAction(

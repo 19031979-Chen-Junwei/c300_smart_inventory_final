@@ -50,11 +50,12 @@ class _AllAlertState extends State<AllAlert> {
 
   @override
   Widget build(BuildContext context) {
-    if (_newAlert.isEmpty) {
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    } else {
+    _populateNewAlert();
+    // if (_newAlert.isEmpty) {
+    //   return Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // } else {
       return Scaffold(
         body: RefreshIndicator(
           onRefresh: _populateNewAlert,
@@ -94,4 +95,4 @@ class _AllAlertState extends State<AllAlert> {
       );
     }
   }
-}
+// }

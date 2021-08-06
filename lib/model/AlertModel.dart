@@ -1,3 +1,4 @@
+import 'package:c300_smart_inventory/page/fingerprint_Login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -33,6 +34,7 @@ class Alert {
     
     return Resource(
       url: "http://chill.azurewebsites.net/api/stock",
+      tk: token,
       parse: (response) {
         final result = json.decode(response.body); 
         list2 = result;

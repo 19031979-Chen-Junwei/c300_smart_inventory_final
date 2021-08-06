@@ -15,6 +15,7 @@ class UserAccount extends StatefulWidget {
 
 class _UserAccountState extends State<UserAccount> {
   Widget build(BuildContext context) {
+    getData();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -23,8 +24,8 @@ class _UserAccountState extends State<UserAccount> {
           Text("Thank you for using Smart Inventory",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
           SizedBox(height: 20),
-          Text(username,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
+          // Text(username,
+          //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
           SizedBox(height: 20),
           // ProfileMenu(
           //   text: "My Account",
@@ -32,12 +33,17 @@ class _UserAccountState extends State<UserAccount> {
           //   press: () => {},
           // ),
           // ProfileMenu(
-          //   text: "Settings",
+          //   text: useBio ? "Bio login :  No" : "Bio login :  Off",
           //   icon: "assets/icons/Settings.svg",
-          //   press: () {
-          //     Navigator.of(context).pushReplacement(
-          //       MaterialPageRoute(builder: (context) => SettingPage()),
-          //     );
+          //   press: () async {
+          //     SharedPreferences prefs = await SharedPreferences.getInstance();
+          //     if(useBio == true){
+          //       useBio = false;
+          //     }
+          //     else{
+          //       useBio = true;
+          //     }
+          //     print(useBio);
           //   },
           // ),
           ProfileMenu(
